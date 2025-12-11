@@ -243,6 +243,36 @@
             background: #f9fafb;
         }
 
+        /* ===== PDF COVER PAGE STYLES ===== */
+        .pdf-cover {
+            padding: 40px 32px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #102647 0%, #17365c 60%, #215f91 100%);
+            color: #ffffff;
+            margin-bottom: 32px;
+        }
+
+        .pdf-cover-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .pdf-cover-subtitle {
+            font-size: 18px;
+            margin-bottom: 24px;
+        }
+
+        .pdf-cover-meta {
+            font-size: 14px;
+            line-height: 1.4;
+            margin-top: 12px;
+        }
+
+        .page-break {
+            page-break-before: always;
+        }
+
         @media (max-width: 720px) {
             .app-header-inner {
                 flex-direction: column;
@@ -256,36 +286,6 @@
             }
             #radarChart {
                 max-width: 100%;
-                /* ===== PDF COVER PAGE STYLES ===== */
-.pdf-cover {
-    padding: 40px 32px;
-    border-radius: 12px;
-    background: linear-gradient(135deg, #102647 0%, #17365c 60%, #215f91 100%);
-    color: #ffffff;
-    margin-bottom: 32px;
-}
-
-.pdf-cover-title {
-    font-size: 28px;
-    font-weight: 700;
-    margin-bottom: 8px;
-}
-
-.pdf-cover-subtitle {
-    font-size: 18px;
-    margin-bottom: 24px;
-}
-
-.pdf-cover-meta {
-    font-size: 14px;
-    line-height: 1.4;
-    margin-top: 12px;
-}
-
-.page-break {
-    page-break-before: always;
-}
-
             }
         }
     </style>
@@ -411,11 +411,10 @@
         </div>
     </div>
 
-    <!-- Отчёт: именно этот блок идёт в PDF -->
+    <!-- Отчёт: именно этот блок идёт в PDF (вторая страница) -->
     <div id="report_container" style="display:none;">
         <div class="report-header">
-            <div> <div id="pdf_wrapper" style="display:none;"></div>
-
+            <div>
                 <div class="report-header-title">Отчёт по системе Talent Radar Pro</div>
                 <div style="font-size:11px;color:var(--text-muted);">
                     Индивидуальный профиль компетенций для целей подбора, развития и кадрового резерва.
@@ -442,6 +441,9 @@
         </p>
         <canvas id="radarChart"></canvas>
     </div>
+
+    <!-- Временный контейнер для формирования PDF (обложка + отчёт) -->
+    <div id="pdf_wrapper" style="display:none;"></div>
 </main>
 
 <footer class="app-footer">
@@ -495,7 +497,6 @@
         return '';
     }
     function normalizeTo100(avg) {
-        // 1 -> 0, 5 -> 100
         return ((avg - 1) / 4) * 100;
     }
     function classifyOverall(score, conscAvg, neuroAvg) {
@@ -550,7 +551,6 @@
         var neuro = average([parseInt(document.getElementById('big_neuroticism_1').value), parseInt(document.getElementById('big_neuroticism_2').value)]);
         var open  = average([parseInt(document.getElementById('big_openness_1').value), parseInt(document.getElementById('big_openness_2').value)]);
 
-        // нормализация и общий индекс
         var hardNorm = normalizeTo100(hardAvg);
         var softNorm = normalizeTo100(softAvg);
         var confNorm = normalizeTo100(confAvg);
@@ -558,14 +558,12 @@
             normalizeTo100(extr),
             normalizeTo100(agree),
             normalizeTo100(consc),
-            normalizeTo100(6 - neuro), // чем меньше нейротизм, тем лучше
+            normalizeTo100(6 - neuro),
             normalizeTo100(open)
         ]);
 
-        // общий индекс
         var overallScore = hardNorm * 0.3 + softNorm * 0.3 + confNorm * 0.2 + traitNorm * 0.2;
 
-        // приоритетные зоны развития
         var areas = [
             { name: 'Профессиональные навыки (hard skills)', avg: hardAvg },
             { name: 'Гибкие навыки (soft skills)', avg: softAvg },
@@ -577,7 +575,6 @@
             devText += '<br>2) ' + areas[1].name + ' — вторая по приоритету зона развития.';
         }
 
-        // ролевые рекомендации
         var softComm = parseInt(document.getElementById('soft_communication').value);
         var softLead = parseInt(document.getElementById('soft_leadership').value);
         var softListen = parseInt(document.getElementById('soft_listening').value);
@@ -585,7 +582,6 @@
         var hardProg = parseInt(document.getElementById('hard_programming').value);
         var roleSuggestions = suggestRole(extr, agree, consc, softComm, softLead, softListen, hardAnal, hardProg);
 
-        // текстовый отчёт
         var out = '';
         out += '<h2 style="margin-top:0;">Результаты оценки для: ' + name + '</h2>';
         out += '<p><strong>Целевая роль:</strong> ' + targetRole + '</p>';
@@ -616,22 +612,18 @@
         var resultDiv = document.getElementById('results');
         resultDiv.innerHTML = out;
 
-        // дата в шапке отчёта
         var dateEl = document.getElementById('report_date');
         if (dateEl) {
             var d = new Date();
             dateEl.textContent = d.toLocaleDateString('ru-RU');
         }
 
-        // показываем контейнер отчёта
         var report = document.getElementById('report_container');
         if (report) { report.style.display = 'block'; }
 
-        // включаем кнопку PDF после расчёта
         var pdfBtn = document.getElementById('download_pdf');
         if (pdfBtn) { pdfBtn.disabled = false; }
 
-        // Рисуем Radar Chart
         var ctx = document.getElementById('radarChart').getContext('2d');
 
         var radarData = [
@@ -692,78 +684,70 @@
     }
 
     function downloadPDF() {
-    var name = document.getElementById('candidate_name').value || 'Кандидат';
-    var targetRole = document.getElementById('target_role').value || 'не указана';
-    var report = document.getElementById('report_container');
+        var name = document.getElementById('candidate_name').value || 'Кандидат';
+        var targetRole = document.getElementById('target_role').value || 'не указана';
+        var report = document.getElementById('report_container');
 
-    if (!report || report.style.display === 'none' || !report.innerHTML.trim()) {
-        alert('Сначала нажмите «Рассчитать», чтобы сформировать отчёт.');
-        return;
-    }
-
-    // контейнер для PDF
-    var pdfWrapper = document.getElementById('pdf_wrapper');
-    if (!pdfWrapper) {
-        alert('Техническая ошибка: не найден контейнер pdf_wrapper.');
-        return;
-    }
-
-    // сохраняем исходное положение отчёта в DOM
-    var originalParent = report.parentNode;
-    var originalNextSibling = report.nextSibling;
-
-    // формируем обложку
-    var d = new Date();
-    var dateStr = d.toLocaleDateString('ru-RU');
-
-    var coverHtml = ''
-        + '<div class="pdf-cover">'
-        +   '<div class="pdf-cover-title">Talent Radar Pro</div>'
-        +   '<div class="pdf-cover-subtitle">Individual Competency Profile</div>'
-        +   '<div class="pdf-cover-meta">'
-        +       '<div><strong>Кандидат:</strong> ' + name + '</div>'
-        +       '<div><strong>Целевая роль:</strong> ' + targetRole + '</div>'
-        +       '<div><strong>Дата формирования:</strong> ' + dateStr + '</div>'
-        +       '<div><strong>Организация:</strong> EKM Global Consulting GmbH / EM Consulting</div>'
-        +       '<div style="margin-top:10px;font-size:12px;">Developed by Elshan Musayev · AI & Public Sector</div>'
-        +   '</div>'
-        + '</div>'
-        + '<div class="page-break"></div>';
-
-    // очищаем pdfWrapper и вставляем обложку
-    pdfWrapper.innerHTML = coverHtml;
-
-    // переносим реальный report_container внутрь pdfWrapper
-    pdfWrapper.appendChild(report);
-    pdfWrapper.style.display = 'block';
-
-    var opt = {
-        margin:       10,
-        filename:     'Talent_Radar_' + name.replace(/\s+/g, '_') + '.pdf',
-        image:        { type: 'jpeg', quality: 0.98 },
-        html2canvas:  { scale: 2 },
-        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
-    };
-
-    // формируем PDF из pdfWrapper, затем возвращаем отчёт на место
-    html2pdf().set(opt).from(pdfWrapper).save().then(function () {
-        pdfWrapper.style.display = 'none';
-        if (originalNextSibling) {
-            originalParent.insertBefore(report, originalNextSibling);
-        } else {
-            originalParent.appendChild(report);
+        if (!report || report.style.display === 'none' || !report.innerHTML.trim()) {
+            alert('Сначала нажмите «Рассчитать», чтобы сформировать отчёт.');
+            return;
         }
-    }).catch(function () {
-        pdfWrapper.style.display = 'none';
-        if (originalNextSibling) {
-            originalParent.insertBefore(report, originalNextSibling);
-        } else {
-            originalParent.appendChild(report);
-        }
-        alert('Произошла ошибка при формировании PDF. Попробуйте ещё раз.');
-    });
-}
 
+        var pdfWrapper = document.getElementById('pdf_wrapper');
+        if (!pdfWrapper) {
+            alert('Техническая ошибка: не найден контейнер pdf_wrapper.');
+            return;
+        }
+
+        var originalParent = report.parentNode;
+        var originalNextSibling = report.nextSibling;
+
+        var d = new Date();
+        var dateStr = d.toLocaleDateString('ru-RU');
+
+        var coverHtml = ''
+            + '<div class="pdf-cover">'
+            +   '<div class="pdf-cover-title">Talent Radar Pro</div>'
+            +   '<div class="pdf-cover-subtitle">Individual Competency Profile</div>'
+            +   '<div class="pdf-cover-meta">'
+            +       '<div><strong>Кандидат:</strong> ' + name + '</div>'
+            +       '<div><strong>Целевая роль:</strong> ' + targetRole + '</div>'
+            +       '<div><strong>Дата формирования:</strong> ' + dateStr + '</div>'
+            +       '<div><strong>Организация:</strong> EKM Global Consulting GmbH / EM Consulting</div>'
+            +       '<div style="margin-top:10px;font-size:12px;">Developed by Elshan Musayev · AI & Public Sector</div>'
+            +   '</div>'
+            + '</div>'
+            + '<div class="page-break"></div>';
+
+        pdfWrapper.innerHTML = coverHtml;
+        pdfWrapper.appendChild(report);
+        pdfWrapper.style.display = 'block';
+
+        var opt = {
+            margin:       10,
+            filename:     'Talent_Radar_' + name.replace(/\s+/g, '_') + '.pdf',
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2 },
+            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+
+        html2pdf().set(opt).from(pdfWrapper).save().then(function () {
+            pdfWrapper.style.display = 'none';
+            if (originalNextSibling) {
+                originalParent.insertBefore(report, originalNextSibling);
+            } else {
+                originalParent.appendChild(report);
+            }
+        }).catch(function () {
+            pdfWrapper.style.display = 'none';
+            if (originalNextSibling) {
+                originalParent.insertBefore(report, originalNextSibling);
+            } else {
+                originalParent.appendChild(report);
+            }
+            alert('Произошла ошибка при формировании PDF. Попробуйте ещё раз.');
+        });
+    }
 </script>
 </body>
 </html>
