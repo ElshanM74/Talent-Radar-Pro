@@ -713,6 +713,56 @@
     var originalNextSibling = report.nextSibling;
 
     // формируем обложку
+    var d = new Date();
+    var dateStr = d.toLocaleDateString('ru-RU');
+
+    var coverHtml = ''
+        + '<div class="pdf-cover">'
+        +   '<div class="pdf-cover-title">Talent Radar Pro</div>'
+        +   '<div class="pdf-cover-subtitle">Individual Competency Profile</div>'
+        +   '<div class="pdf-cover-meta">'
+        +       '<div><strong>Кандидат:</strong> ' + name + '</div>'
+        +       '<div><strong>Целевая роль:</strong> ' + targetRole + '</div>'
+        +       '<div><strong>Дата формирования:</strong> ' + dateStr + '</div>'
+        +       '<div><strong>Организация:</strong> EKM Global Consulting GmbH / EM Consulting</div>'
+        +       '<div style="margin-top:10px;font-size:12px;">Developed by Elshan Musayev · AI & Public Sector</div>'
+        +   '</div>'
+        + '</div>'
+        + '<div class="page-break"></div>';
+
+    // очищаем pdfWrapper и вставляем обложку
+    pdfWrapper.innerHTML = coverHtml;
+
+    // переносим реальный report_container внутрь pdfWrapper
+    pdfWrapper.appendChild(report);
+    pdfWrapper.style.display = 'block';
+
+    var opt = {
+        margin:       10,
+        filename:     'Talent_Radar_' + name.replace(/\s+/g, '_') + '.pdf',
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2 },
+        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+
+    // формируем PDF из pdfWrapper, затем возвращаем отчёт на место
+    html2pdf().set(opt).from(pdfWrapper).save().then(function () {
+        pdfWrapper.style.display = 'none';
+        if (originalNextSibling) {
+            originalParent.insertBefore(report, originalNextSibling);
+        } else {
+            originalParent.appendChild(report);
+        }
+    }).catch(function () {
+        pdfWrapper.style.display = 'none';
+        if (originalNextSibling) {
+            originalParent.insertBefore(report, originalNextSibling);
+        } else {
+            originalParent.appendChild(report);
+        }
+        alert('Произошла ошибка при формировании PDF. Попробуйте ещё раз.');
+    });
+}
 
 </script>
 </body>
