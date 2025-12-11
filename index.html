@@ -692,24 +692,28 @@
     }
 
     function downloadPDF() {
-        var name = document.getElementById('candidate_name').value || 'Кандидат';
-        var container = document.getElementById('report_container');
+    var name = document.getElementById('candidate_name').value || 'Кандидат';
+    var targetRole = document.getElementById('target_role').value || 'не указана';
+    var report = document.getElementById('report_container');
 
-        if (!container || container.style.display === 'none' || !container.innerHTML.trim()) {
-            alert('Сначала нажмите «Рассчитать», чтобы сформировать отчёт.');
-            return;
-        }
-
-        var opt = {
-            margin:       10,
-            filename:     'Talent_Radar_' + name.replace(/\s+/g, '_') + '.pdf',
-            image:        { type: 'jpeg', quality: 0.98 },
-            html2canvas:  { scale: 2 },
-            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
-        };
-
-        html2pdf().set(opt).from(container).save();
+    if (!report || report.style.display === 'none' || !report.innerHTML.trim()) {
+        alert('Сначала нажмите «Рассчитать», чтобы сформировать отчёт.');
+        return;
     }
+
+    // контейнер для PDF
+    var pdfWrapper = document.getElementById('pdf_wrapper');
+    if (!pdfWrapper) {
+        alert('Техническая ошибка: не найден контейнер pdf_wrapper.');
+        return;
+    }
+
+    // сохраняем исходное положение отчёта в DOM
+    var originalParent = report.parentNode;
+    var originalNextSibling = report.nextSibling;
+
+    // формируем обложку
+
 </script>
 </body>
 </html>
