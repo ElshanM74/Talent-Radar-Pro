@@ -2,10 +2,10 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Talent Radar Pro — интерактивная оценка</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- Глобальные стили -->
+    <!-- СТИЛИ -->
     <style>
         :root {
             --bg-body: #f1f3f7;
@@ -22,21 +22,18 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
-            line-height: 1.6;
             margin: 0;
             padding: 0;
             background-color: var(--bg-body);
             color: var(--text-main);
+            line-height: 1.6;
         }
 
-        h1, h2, h3 {
-            color: var(--text-main);
-            margin-top: 0;
-        }
+        h1, h2, h3 { margin-top: 0; }
 
         .app-header {
-            background: linear-gradient(135deg, #102647 0%, #17365c 60%, #215f91 100%);
-            color: #ffffff;
+            background: linear-gradient(135deg,#102647 0%,#17365c 60%,#215f91 100%);
+            color: #fff;
             padding: 16px 20px;
             box-shadow: 0 2px 6px rgba(0,0,0,0.1);
         }
@@ -61,7 +58,7 @@
             width: 40px;
             height: 40px;
             border-radius: 12px;
-            background: rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.08);
             border: 1px solid rgba(255,255,255,0.4);
             display: flex;
             align-items: center;
@@ -70,15 +67,8 @@
             font-size: 16px;
         }
 
-        .brand-title {
-            font-size: 20px;
-            font-weight: 700;
-        }
-
-        .brand-subtitle {
-            font-size: 12px;
-            opacity: 0.8;
-        }
+        .brand-title { font-size: 20px; font-weight: 700; }
+        .brand-subtitle { font-size: 12px; opacity: 0.8; }
 
         .brand-meta {
             font-size: 12px;
@@ -95,7 +85,7 @@
         .card {
             background-color: var(--bg-card);
             border-radius: 12px;
-            padding: 18px 18px 10px 18px;
+            padding: 18px;
             box-shadow: 0 4px 12px rgba(15,23,42,0.06);
             border: 1px solid var(--border-soft);
             margin-bottom: 18px;
@@ -114,6 +104,11 @@
             text-align: left;
         }
 
+        th {
+            background-color: #f5f7fb;
+            font-weight: 600;
+        }
+
         select, input[type="text"] {
             width: 100%;
             padding: 4px 6px;
@@ -122,8 +117,86 @@
             font-size: 14px;
         }
 
-        /* --- PDF --- */
+        select:focus, input[type="text"]:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 1px rgba(60,141,217,0.25);
+        }
 
+        .header-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .buttons-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 9px 18px;
+            background-color: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: 999px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        button:hover { background-color: #2d7bbc; }
+        button:disabled { background-color: #9ca3af; cursor: default; }
+
+        /* Блок отчёта */
+        #report_container {
+            display: none;
+            background: #ffffff;
+            padding: 18px;
+            border-radius: 12px;
+            border: 1px solid var(--border-soft);
+            margin-top: 18px;
+        }
+
+        .report-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 10px;
+            margin-bottom: 12px;
+        }
+
+        .report-header-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .report-header-meta {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-align: right;
+        }
+
+        .result {
+            background-color: var(--primary-soft);
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid #c3d6f3;
+        }
+
+        #radarChart {
+            max-width: 600px;
+            max-height: 420px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+
+        /* PDF-обложка */
         #pdf_wrapper {
             margin: 0 !important;
             padding: 0 !important;
@@ -131,7 +204,7 @@
 
         .pdf-cover {
             padding: 40px 32px;
-            background: linear-gradient(135deg, #102647 0%, #17365c 60%, #215f91 100%);
+            background: linear-gradient(135deg,#102647 0%,#17365c 60%,#215f91 100%);
             color: #ffffff;
             margin: 0 !important;
             border-radius: 0 !important;
@@ -145,7 +218,7 @@
 
         .pdf-cover-subtitle {
             font-size: 18px;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
         }
 
         .pdf-cover-meta {
@@ -153,11 +226,9 @@
             line-height: 1.4;
         }
 
-        .page-break {
-            page-break-before: always;
-        }
+        .page-break { page-break-before: always; }
 
-        footer.app-footer {
+        .app-footer {
             border-top: 1px solid #e5e7eb;
             padding: 10px 16px 16px 16px;
             font-size: 12px;
@@ -165,16 +236,21 @@
             text-align: center;
             background: #f9fafb;
         }
+
+        @media (max-width: 720px) {
+            .app-header-inner { flex-direction: column; align-items: flex-start; }
+            .brand-meta { text-align: left; }
+            .header-grid { grid-template-columns: 1fr; }
+            #radarChart { max-width: 100%; }
+        }
     </style>
 
-    <!-- PDF LIB -->
+    <!-- pdf + chart -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-
-    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-
 <body>
+
 <header class="app-header">
     <div class="app-header-inner">
         <div class="brand">
@@ -185,20 +261,19 @@
             </div>
         </div>
         <div class="brand-meta">
-            <div>Индивидуальный профиль компетенций</div>
-            <div>На базе методологии Elshan Musayev · AI & Public Sector</div>
+            <div>Individual Competency Profile</div>
+            <div>Based on methodology of Elshan Musayev · AI & Public Sector</div>
         </div>
     </div>
 </header>
 
 <main class="app-main">
-
-    <!-- Ввод имени и роли -->
+    <!-- Общая шапка формы -->
     <div class="card">
         <h1 style="font-size:20px;margin-bottom:6px;">Оценка по системе Talent Radar Pro</h1>
-        <p class="intro-text">
-            Заполните форму, оценивая каждый пункт от 1 до 5. После заполнения нажмите <strong>«Рассчитать»</strong>,
-            чтобы получить Radar Chart и PDF-отчёт.
+        <p style="font-size:14px;color:var(--text-muted);margin-bottom:8px;">
+            Оцените каждый пункт по шкале от 1 до 5. После заполнения нажмите
+            <strong>«Рассчитать»</strong>, чтобы получить профиль компетенций, Radar Chart и PDF-отчёт.
         </p>
 
         <div class="header-grid">
@@ -215,7 +290,7 @@
         </div>
     </div>
 
-    <!-- Hard skills -->
+    <!-- HARD -->
     <div class="card">
         <h2 style="font-size:18px;">Hard skills (профессиональные навыки)</h2>
         <table>
@@ -232,7 +307,7 @@
         </table>
     </div>
 
-    <!-- Soft skills -->
+    <!-- SOFT -->
     <div class="card">
         <h2 style="font-size:18px;">Soft skills (гибкие навыки)</h2>
         <table>
@@ -246,83 +321,81 @@
             <tr><td>Гибкость</td><td><select id="soft_adaptability"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></td></tr>
             <tr><td>Креативность</td><td><select id="soft_problem"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></td></tr>
             <tr><td>Тайм-менеджмент</td><td><select id="soft_time"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></td></tr>
-            <tr><td>Переговоры</td><td><select id="soft_conflict"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></td></tr>
-            <tr><td>Презентации</td><td><select id="soft_presentation"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></td></tr>
+            <tr><td>Переговоры и конфликты</td><td><select id="soft_conflict"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></td></tr>
+            <tr><td>Презентации / выступления</td><td><select id="soft_presentation"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></td></tr>
             </tbody>
         </table>
     </div>
 
-    <!-- Confidence -->
+    <!-- УВЕРЕННОСТЬ -->
     <div class="card">
-        <h2 style="font-size:18px;">Уверенность в себе</h2>
+        <h2 style="font-size:18px;">Уверенность в себе и самоэффективность</h2>
         <table>
             <thead><tr><th>Утверждение</th><th>Оценка</th></tr></thead>
             <tbody>
-            <tr><td>Уверенность при выступлениях</td><td><select id="conf_1"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></td></tr>
-            <tr><td>Отстаивание позиции</td><td><select id="conf_2"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></td></tr>
-            <tr><td>Спокойствие под давлением</td><td><select id="conf_3"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></td></tr>
-            <tr><td>Вера в достижение целей</td><td><select id="conf_4"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></td></tr>
-            <tr><td>Восстановление после неудач</td><td><select id="conf_5"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></td></tr>
+            <tr><td>Я уверенно представляю свои идеи группе.</td><td><select id="conf_1"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></td></tr>
+            <tr><td>Я могу отстаивать своё мнение.</td><td><select id="conf_2"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></td></tr>
+            <tr><td>Я сохраняю спокойствие под давлением.</td><td><select id="conf_3"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></td></tr>
+            <tr><td>Я верю в способность достигать целей.</td><td><select id="conf_4"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></td></tr>
+            <tr><td>Я быстро восстанавливаюсь после неудач.</td><td><select id="conf_5"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></td></tr>
             </tbody>
         </table>
     </div>
 
-    <!-- Big Five -->
+    <!-- BIG FIVE -->
     <div class="card">
         <h2 style="font-size:18px;">Черты личности (Big Five)</h2>
         <table>
             <thead><tr><th>Утверждение</th><th>Оценка</th></tr></thead>
             <tbody>
-            <tr><td>Экстраверсия</td><td><select id="big_extraversion_1"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></td></tr>
-            <tr><td>Энергия от общения</td><td><select id="big_extraversion_2"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></td></tr>
+            <tr><td>Мне комфортно в центре внимания.</td><td><select id="big_extraversion_1"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></td></tr>
+            <tr><td>Я заряжаюсь от общения.</td><td><select id="big_extraversion_2"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></td></tr>
 
-            <tr><td>Дружелюбие</td><td><select id="big_agreeableness_1"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></td></tr>
-            <tr><td>Избегание конфликтов</td><td><select id="big_agreeableness_2"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></td></tr>
+            <tr><td>Я доверяю людям и иду на компромисс.</td><td><select id="big_agreeableness_1"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></td></tr>
+            <tr><td>Я избегаю конфликтов.</td><td><select id="big_agreeableness_2"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></td></tr>
 
-            <tr><td>Сознательность</td><td><select id="big_conscientiousness_1"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></td></tr>
-            <tr><td>Следование плану</td><td><select id="big_conscientiousness_2"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></td></tr>
+            <tr><td>Я планирую и довожу дела до конца.</td><td><select id="big_conscientiousness_1"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></td></tr>
+            <tr><td>Я соблюдаю сроки и аккуратен в работе.</td><td><select id="big_conscientiousness_2"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></td></tr>
 
-            <tr><td>Эмоциональная реактивность</td><td><select id="big_neuroticism_1"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></td></tr>
-            <tr><td>Стресс в мелочах</td><td><select id="big_neuroticism_2"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></td></tr>
+            <tr><td>Я часто испытываю стресс и тревогу.</td><td><select id="big_neuroticism_1"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></td></tr>
+            <tr><td>Мелочи могут меня сильно выбить.</td><td><select id="big_neuroticism_2"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></td></tr>
 
-            <tr><td>Открытость новому</td><td><select id="big_openness_1"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></td></tr>
-            <tr><td>Интерес к искусству</td><td><select id="big_openness_2"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></td></tr>
+            <tr><td>Мне интересно новое, люблю экспериментировать.</td><td><select id="big_openness_1"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></td></tr>
+            <tr><td>Я люблю искусство, музыку, литературу.</td><td><select id="big_openness_2"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></td></tr>
             </tbody>
         </table>
 
         <div class="buttons-row">
             <button type="button" onclick="calculateResults()">Рассчитать</button>
-            <button type="button" id="download_pdf" onclick="downloadPDF()" disabled>Скачать PDF</button>
+            <button type="button" id="download_pdf" onclick="downloadPDF()" disabled>Скачать PDF-отчёт</button>
         </div>
     </div>
-    <!-- === OTCHET === -->
-    <div id="report_container" style="display:none; background:#fff; padding:20px; border-radius:12px; border:1px solid #dde3ee; margin-top:20px;">
 
-        <div class="report-header" style="display:flex; justify-content:space-between; border-bottom:1px solid #e5e7eb; padding-bottom:10px; margin-bottom:15px;">
+    <!-- ОТЧЁТ + ГРАФИК -->
+    <div id="report_container">
+        <div class="report-header">
             <div>
-                <div id="report_title" style="font-size:18px; font-weight:700; color:#1f4f82;">
-                    Отчёт Talent Radar Pro
+                <div class="report-header-title">Отчёт по системе Talent Radar Pro</div>
+                <div style="font-size:12px;color:var(--text-muted);">
+                    Индивидуальный профиль компетенций для подбора, развития и кадрового резерва.
                 </div>
-                <div style="font-size:12px; color:#6b7280;">Индивидуальный профиль компетенций</div>
             </div>
-            <div style="font-size:12px; color:#6b7280; text-align:right;">
-                <div>Дата: <span id="report_date"></span></div>
+            <div class="report-header-meta">
+                <div>Дата формирования: <span id="report_date"></span></div>
                 <div>Разработано: Talent Radar · Elshan Musayev</div>
             </div>
         </div>
 
-        <div id="results" class="result" style="background:#eef6ff; border-radius:10px; padding:12px;"></div>
+        <div id="results" class="result"></div>
 
-        <h3 style="margin-top:20px;">Radar Chart</h3>
-        <p style="font-size:12px; color:#6b7280;">
-            Площадь диаграммы показывает силу профиля по ключевым компетенциям.
+        <h3 style="margin-top:14px;">Radar Chart</h3>
+        <p style="font-size:12px;color:var(--text-muted);">
+            Диаграмма показывает силу профиля по ключевым группам компетенций (0–100).
         </p>
-
-        <canvas id="radarChart" style="max-width:600px; margin-bottom:20px;"></canvas>
-
+        <canvas id="radarChart"></canvas>
     </div>
 
-    <!-- === PDF WRAPPER (обложка + отчёт) === -->
+    <!-- Контейнер для PDF (обложка + отчёт) -->
     <div id="pdf_wrapper" style="display:none;"></div>
 
 </main>
@@ -330,54 +403,25 @@
 <footer class="app-footer">
     © Talent Radar · Developed by Elshan Musayev
 </footer>
+
 <script>
 let radarChart = null;
 
-/* ---------- Среднее ---------- */
-function avg(arr) {
-    return arr.reduce((a, b) => a + b, 0) / arr.length;
+function avg(arr){return arr.reduce((a,b)=>a+b,0)/arr.length;}
+function normalize(v){return ((v-1)/4)*100;}
+
+function traitText(type,avg){
+    if(type==="extr"){if(avg>=4)return"Выраженная экстраверсия";if(avg<=2)return"Склонность к интроверсии";return"Амбивертный профиль";}
+    if(type==="agree"){if(avg>=4)return"Высокая доброжелательность";if(avg<=2)return"Более жёсткая, независимая позиция";return"Умеренная дружелюбность";}
+    if(type==="consc"){if(avg>=4)return"Высокая организованность и дисциплина";if(avg<=2)return"Низкая организованность";return"Средняя сознательность";}
+    if(type==="neuro"){if(avg>=4)return"Высокая эмоциональная реактивность";if(avg<=2)return"Эмоциональная стабильность";return"Умеренная чувствительность к стрессу";}
+    if(type==="open"){if(avg>=4)return"Высокая открытость новому";if(avg<=2)return"Склонность к традиционности";return"Средняя открытость опыту";}
+    return "";
 }
 
-/* ---------- Нормализация 1–5 → 0–100 ---------- */
-function normalize(v) {
-    return ((v - 1) / 4) * 100;
-}
-
-/* ---------- Интерпретации Big Five ---------- */
-function traitText(type, avg) {
-    if (type === "extr") {
-        if (avg >= 4) return "Выраженная экстраверсия";
-        if (avg <= 2) return "Склонность к интроверсии";
-        return "Амбивертный профиль";
-    }
-    if (type === "agree") {
-        if (avg >= 4) return "Высокая доброжелательность";
-        if (avg <= 2) return "Склонность к жёсткой позиции";
-        return "Умеренная дружелюбность";
-    }
-    if (type === "consc") {
-        if (avg >= 4) return "Высокая организованность";
-        if (avg <= 2) return "Низкая дисциплина";
-        return "Средняя сознательность";
-    }
-    if (type === "neuro") {
-        if (avg >= 4) return "Высокая тревожность";
-        if (avg <= 2) return "Эмоциональная стабильность";
-        return "Умеренная эмоциональная реактивность";
-    }
-    if (type === "open") {
-        if (avg >= 4) return "Выраженная открытость новому";
-        if (avg <= 2) return "Традиционный стиль мышления";
-        return "Средняя открытость опыту";
-    }
-}
-/* ---------- Основная функция расчёта ---------- */
-function calculateResults() {
-
+function calculateResults(){
     const name = document.getElementById("candidate_name").value || "Кандидат";
     const role = document.getElementById("target_role").value || "Не указана";
-
-    /* ---- Сбор оценок ---- */
 
     const hard = avg([
         +hard_digital.value,
@@ -410,14 +454,11 @@ function calculateResults() {
         +conf_5.value
     ]);
 
-    const extr = avg([+big_extraversion_1.value, +big_extraversion_2.value]);
-    const agree = avg([+big_agreeableness_1.value, +big_agreeableness_2.value]);
-    const consc = avg([+big_conscientiousness_1.value, +big_conscientiousness_2.value]);
-    const neuro = avg([+big_neuroticism_1.value, +big_neuroticism_2.value]);
-    const open  = avg([+big_openness_1.value, +big_openness_2.value]);
-
-
-    /* ---- Нормализация ---- */
+    const extr = avg([+big_extraversion_1.value,+big_extraversion_2.value]);
+    const agree = avg([+big_agreeableness_1.value,+big_agreeableness_2.value]);
+    const consc = avg([+big_conscientiousness_1.value,+big_conscientiousness_2.value]);
+    const neuro = avg([+big_neuroticism_1.value,+big_neuroticism_2.value]);
+    const open  = avg([+big_openness_1.value,+big_openness_2.value]);
 
     const hardN = normalize(hard);
     const softN = normalize(soft);
@@ -428,163 +469,139 @@ function calculateResults() {
     const emoStableN = normalize(6 - neuro);
     const openN = normalize(open);
 
-    /* ---- Итоговый индекс ---- */
+    const traitsBlockNorm = (extrN+agreeN+conscN+emoStableN+openN)/5;
+    const score = hardN*0.3 + softN*0.3 + confN*0.2 + traitsBlockNorm*0.2;
 
-    const score =
-        hardN * 0.3 +
-        softN * 0.3 +
-        confN * 0.2 +
-        (extrN + agreeN + conscN + emoStableN + openN) / 5 * 0.2;
-
-    /* ---- Формируем HTML отчёта ---- */
+    let summary;
+    if(score>=80 && consc>=3.5 && neuro<=3){
+        summary = "Сильный кандидат для сложных и ответственных ролей, включая AI/digital-проекты.";
+    } else if(score>=60){
+        summary = "Перспективный кандидат. Есть хороший потенциал, но есть зоны, которые стоит усилить перед назначением на ключевые роли.";
+    } else {
+        summary = "Рискованный кандидат для ответственных AI/digital-ролей. Лучше сфокусироваться на базовом развитии и стабильности.";
+    }
 
     const html = `
         <h2 style="margin-top:0;">Результаты оценки: ${name}</h2>
         <p><strong>Целевая роль:</strong> ${role}</p>
 
-        <h3>Итоговый индекс</h3>
+        <h3>Итоговый индекс Talent Radar</h3>
         <p><strong>${score.toFixed(0)} / 100</strong></p>
+        <p>${summary}</p>
 
         <h3>Hard skills</h3>
-        <p>${hard.toFixed(2)} — ${hard < 3 ? "нуждается в развитии" : (hard < 4 ? "средний уровень" : "сильная сторона")}</p>
+        <p>Средний балл: ${hard.toFixed(2)}</p>
 
         <h3>Soft skills</h3>
-        <p>${soft.toFixed(2)} — ${soft < 3 ? "нуждается в развитии" : (soft < 4 ? "средний уровень" : "сильная сторона")}</p>
+        <p>Средний балл: ${soft.toFixed(2)}</p>
 
         <h3>Уверенность в себе</h3>
-        <p>${conf.toFixed(2)}</p>
+        <p>Средний балл: ${conf.toFixed(2)}</p>
 
         <h3>Черты личности (Big Five)</h3>
         <ul>
-            <li>Экстраверсия — ${extr.toFixed(2)} (${traitText("extr", extr)})</li>
-            <li>Дружелюбие — ${agree.toFixed(2)} (${traitText("agree", agree)})</li>
-            <li>Сознательность — ${consc.toFixed(2)} (${traitText("consc", consc)})</li>
-            <li>Эмоциональная стабильность — ${(6 - neuro).toFixed(2)} (${traitText("neuro", neuro)})</li>
-            <li>Открытость опыту — ${open.toFixed(2)} (${traitText("open", open)})</li>
+            <li>Экстраверсия — ${extr.toFixed(2)} (${traitText("extr",extr)})</li>
+            <li>Дружелюбие — ${agree.toFixed(2)} (${traitText("agree",agree)})</li>
+            <li>Сознательность — ${consc.toFixed(2)} (${traitText("consc",consc)})</li>
+            <li>Эмоциональная стабильность — ${(6-neuro).toFixed(2)} (${traitText("neuro",neuro)})</li>
+            <li>Открытость опыту — ${open.toFixed(2)} (${traitText("open",open)})</li>
         </ul>
     `;
 
     document.getElementById("results").innerHTML = html;
     document.getElementById("report_container").style.display = "block";
-
-    /* ---- Дата ---- */
-
-    document.getElementById("report_date").textContent =
-        new Date().toLocaleDateString("ru-RU");
-
-    /* ---- Активируем кнопку PDF ---- */
-
+    document.getElementById("report_date").textContent = new Date().toLocaleDateString("ru-RU");
     document.getElementById("download_pdf").disabled = false;
 
-    /* ---- Radar Chart ---- */
-
     const ctx = document.getElementById("radarChart").getContext("2d");
-
-    if (radarChart) radarChart.destroy();
-
-    radarChart = new Chart(ctx, {
-        type: "radar",
-        data: {
-            labels: [
-                "Hard", "Soft", "Уверенность",
-                "Экстраверсия", "Дружелюбие", "Сознательность",
-                "Эмоц. стабильность", "Открытость"
+    if(radarChart) radarChart.destroy();
+    radarChart = new Chart(ctx,{
+        type:"radar",
+        data:{
+            labels:[
+                "Hard","Soft","Уверенность",
+                "Экстраверсия","Дружелюбие",
+                "Сознательность","Эмоц. стабильность","Открытость"
             ],
-            datasets: [{
-                label: "Профиль компетенций",
-                data: [hardN, softN, confN, extrN, agreeN, conscN, emoStableN, openN],
-                fill: true,
-                pointRadius: 3
+            datasets:[{
+                label:"Профиль компетенций",
+                data:[hardN,softN,confN,extrN,agreeN,conscN,emoStableN,openN],
+                fill:true,
+                pointRadius:3
             }]
         },
-        options: {
-            responsive: true,
-            scales: {
-                r: {
-                    min: 0,
-                    max: 100,
-                    ticks: { stepSize: 20 }
-                }
-            },
-            plugins: { legend: { display: false } }
+        options:{
+            responsive:true,
+            scales:{ r:{ min:0,max:100,ticks:{stepSize:20} } },
+            plugins:{ legend:{display:false} }
         }
     });
 }
-/* ---------- PDF: идеальная версия без пустой страницы ---------- */
-function downloadPDF() {
 
-    const name = document.getElementById("candidate_name").value || "Кандидат";
+function downloadPDF(){
+    const name = (document.getElementById("candidate_name").value || "Кандидат").trim();
     const role = document.getElementById("target_role").value || "Не указана";
-
     const report = document.getElementById("report_container");
     const pdfWrapper = document.getElementById("pdf_wrapper");
 
-    if (!report || report.style.display === "none") {
-        alert("Сначала нажмите «Рассчитать»");
+    if(!report || report.style.display==="none"){
+        alert("Сначала нажмите «Рассчитать».");
         return;
     }
 
-    /* ===== 1. Готовим обложку ===== */
-
-    const date = new Date().toLocaleDateString("ru-RU");
+    const dateStr = new Date().toLocaleDateString("ru-RU");
 
     const coverHTML = `
         <div class="pdf-cover">
             <div class="pdf-cover-title">Talent Radar Pro</div>
             <div class="pdf-cover-subtitle">Individual Competency Profile</div>
-
             <div class="pdf-cover-meta">
-                <div><strong>Кандидат:</strong> ${name}</div>
+                <div><strong>Кандидат:</strong> ${name || "Кандидат"}</div>
                 <div><strong>Целевая роль:</strong> ${role}</div>
-                <div><strong>Дата формирования:</strong> ${date}</div>
+                <div><strong>Дата формирования:</strong> ${dateStr}</div>
                 <div><strong>Организация:</strong> EKM Global Consulting GmbH / EM Consulting</div>
-                <div style="margin-top:10px; font-size:12px;">Developed by Elshan Musayev · AI & Public Sector</div>
+                <div style="margin-top:10px;font-size:12px;">
+                    Developed by Elshan Musayev · AI & Public Sector
+                </div>
             </div>
         </div>
-
         <div class="page-break"></div>
     `;
 
-    /* ===== 2. Собираем PDF-структуру ===== */
-
-    pdfWrapper.innerHTML = "";                         // чтобы не было мусора
-    pdfWrapper.style.margin = "0";
-    pdfWrapper.style.padding = "0";
-
+    pdfWrapper.innerHTML = "";
+    pdfWrapper.style.display = "block";
     pdfWrapper.insertAdjacentHTML("beforeend", coverHTML);
 
-    // Перемещаем блок отчёта временно внутрь PDF
-    pdfWrapper.appendChild(report);
+    const originalParent = report.parentNode;
+    const originalNext = report.nextSibling;
 
-    /* ===== 3. Настройки PDF ===== */
+    pdfWrapper.appendChild(report);
 
     const opt = {
         margin: 0,
-        filename: "Talent_Radar_" + name.replace(/\s+/g, "_") + ".pdf",
-        image: { type: "jpeg", quality: 0.98 },
-        html2canvas: { scale: 2 },
-        jsPDF: {
-            unit: "mm",
-            format: "a4",
-            orientation: "portrait"
-        },
-        pagebreak: { mode: ["css", "avoid-all"] }
+        filename: "Talent_Radar_" + (name || "Candidate").replace(/\s+/g,"_") + ".pdf",
+        image: { type:"jpeg",quality:0.98 },
+        html2canvas: { scale:2 },
+        jsPDF: { unit:"mm",format:"a4",orientation:"portrait" },
+        pagebreak: { mode:["css","avoid-all"] }
     };
 
-    /* ===== 4. Генерация ===== */
-
-    html2pdf()
-        .set(opt)
-        .from(pdfWrapper)
-        .save()
-        .then(() => {
-            // Возвращаем отчёт обратно
-            document.querySelector(".app-main").appendChild(report);
-            pdfWrapper.style.display = "none";
-        })
-        .catch(() => {
-            alert("Ошибка при формировании PDF");
-        });
+    html2pdf().set(opt).from(pdfWrapper).save().then(()=>{
+        pdfWrapper.style.display="none";
+        if(originalNext){
+            originalParent.insertBefore(report,originalNext);
+        } else {
+            originalParent.appendChild(report);
+        }
+    }).catch(()=>{
+        pdfWrapper.style.display="none";
+        if(originalNext){
+            originalParent.insertBefore(report,originalNext);
+        } else {
+            originalParent.appendChild(report);
+        }
+        alert("Ошибка при формировании PDF.");
+    });
 }
 </script>
 </body>
