@@ -3,751 +3,185 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Talent Radar Pro — интерактивная оценка</title>
+    <title>Talent Radar Pro</title>
+
     <style>
-        :root {
-            --bg-body: #f1f3f7;
-            --bg-card: #ffffff;
-            --primary: #1f4f82;
-            --primary-soft: #e5effa;
-            --accent: #3c8dd9;
-            --text-main: #253044;
-            --text-muted: #6b7280;
-            --border-soft: #dde3ee;
-        }
-
-        * { box-sizing: border-box; }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
-            line-height: 1.6;
-            margin: 0;
-            padding: 0;
-            background-color: var(--bg-body);
-            color: var(--text-main);
-        }
-
-        h1, h2, h3 {
-            color: var(--text-main);
-            margin-top: 0;
-        }
-
-        a { color: var(--accent); }
-
-        .app-header {
-            background: linear-gradient(135deg, #102647 0%, #17365c 60%, #215f91 100%);
-            color: #ffffff;
-            padding: 16px 20px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-        }
-
-        .app-header-inner {
-            max-width: 1100px;
-            margin: 0 auto;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 16px;
-            flex-wrap: wrap;
-        }
-
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .brand-mark {
-            width: 40px;
-            height: 40px;
-            border-radius: 12px;
-            background: rgba(255,255,255,0.1);
-            border: 1px solid rgba(255,255,255,0.4);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 16px;
-        }
-
-        .brand-title {
-            font-size: 20px;
-            font-weight: 700;
-        }
-
-        .brand-subtitle {
-            font-size: 12px;
-            opacity: 0.8;
-        }
-
-        .brand-meta {
-            font-size: 12px;
-            text-align: right;
-            opacity: 0.9;
-        }
-
-        .app-main {
-            max-width: 1100px;
-            margin: 20px auto 32px auto;
-            padding: 0 16px;
-        }
-
-        .card {
-            background-color: var(--bg-card);
-            border-radius: 12px;
-            padding: 18px 18px 10px 18px;
-            box-shadow: 0 4px 12px rgba(15,23,42,0.06);
-            border: 1px solid var(--border-soft);
-            margin-bottom: 18px;
-        }
-
-        .intro-text {
-            font-size: 14px;
-            color: var(--text-muted);
-            margin-bottom: 12px;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 10px;
-            font-size: 14px;
-        }
-
-        th, td {
-            border: 1px solid #e1e5f0;
-            padding: 6px 8px;
-            text-align: left;
-        }
-
-        th {
-            background-color: #f5f7fb;
-            font-weight: 600;
-        }
-
-        select, input[type="text"] {
-            width: 100%;
-            padding: 4px 6px;
-            box-sizing: border-box;
-            border-radius: 6px;
-            border: 1px solid #cbd5e1;
-            font-size: 14px;
-        }
-
-        select:focus, input[type="text"]:focus {
-            outline: none;
-            border-color: var(--accent);
-            box-shadow: 0 0 0 1px rgba(60,141,217,0.25);
-        }
-
-        .result {
-            background-color: var(--primary-soft);
-            padding: 12px;
-            border-radius: 10px;
-            border: 1px solid #c3d6f3;
-            margin-top: 10px;
-        }
-
-        button {
-            padding: 9px 18px;
-            background-color: var(--accent);
-            color: white;
-            border: none;
-            border-radius: 999px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 500;
-        }
-
-        button:hover {
-            background-color: #2d7bbc;
-        }
-
-        button:disabled {
-            background-color: #9ca3af;
-            cursor: default;
-        }
-
-        .header-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 10px;
-        }
-
-        .buttons-row {
-            display: flex;
-            gap: 10px;
-            margin-top: 4px;
-            margin-bottom: 4px;
-            flex-wrap: wrap;
-        }
-
-        .note {
-            font-size: 12px;
-            color: var(--text-muted);
-            margin-bottom: 8px;
-        }
-
-        #report_container {
-            background: #ffffff;
-            padding: 16px;
-            border-radius: 12px;
-            margin-top: 14px;
-            border: 1px solid var(--border-soft);
-        }
-
-        #radarChart {
-            max-width: 600px;
-            max-height: 420px;
-            margin-bottom: 8px;
-        }
-
-        .report-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            border-bottom: 1px solid #e5e7eb;
-            padding-bottom: 8px;
-            margin-bottom: 10px;
-        }
-
-        .report-header-title {
-            font-size: 16px;
-            font-weight: 700;
-            color: var(--primary);
-        }
-
-        .report-header-meta {
-            font-size: 11px;
-            color: var(--text-muted);
-            text-align: right;
-        }
-
-        .methodology-box {
-            font-size: 11px;
-            color: var(--text-muted);
-            background: #f9fafb;
-            border-radius: 8px;
-            padding: 8px 10px;
-            border: 1px dashed #d1d5db;
-            margin-bottom: 8px;
-        }
-
-        .app-footer {
-            border-top: 1px solid #e5e7eb;
-            padding: 10px 16px 16px 16px;
-            font-size: 12px;
-            color: var(--text-muted);
-            text-align: center;
-            background: #f9fafb;
-        }
-
-        /* ===== PDF COVER PAGE STYLES ===== */
-        .pdf-cover {
-            padding: 40px 32px;
-            border-radius: 12px;
-            background: linear-gradient(135deg, #102647 0%, #17365c 60%, #215f91 100%);
-            color: #ffffff;
-            margin-bottom: 32px;
-        }
-
-        .pdf-cover-title {
-            font-size: 28px;
-            font-weight: 700;
-            margin-bottom: 8px;
-        }
-
-        .pdf-cover-subtitle {
-            font-size: 18px;
-            margin-bottom: 24px;
-        }
-
-        .pdf-cover-meta {
-            font-size: 14px;
-            line-height: 1.4;
-            margin-top: 12px;
-        }
-
-        .page-break {
-            page-break-before: always;
-        }
-
-        @media (max-width: 720px) {
-            .app-header-inner {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            .brand-meta {
-                text-align: left;
-            }
-            .header-grid {
-                grid-template-columns: 1fr;
-            }
-            #radarChart {
-                max-width: 100%;
-            }
-        }
+        body { font-family: Arial, sans-serif; margin:0; padding:0; background:#f1f3f7; }
+        .header { background:#17365c; color:white; padding:16px 20px; font-size:20px; font-weight:bold; }
+        .container { max-width:900px; margin:20px auto; background:white; padding:20px; border-radius:10px; }
+        table { width:100%; border-collapse:collapse; margin-bottom:20px; }
+        th,td { border:1px solid #ccc; padding:6px; }
+        select,input { width:100%; padding:6px; }
+        button { padding:10px 20px; background:#1f4f82; color:white; border:none; border-radius:8px; cursor:pointer; }
+        button:hover { background:#143a63; }
+        #report_container { display:none; margin-top:20px; padding:20px; background:#eef5ff; border-radius:10px; }
+        canvas { max-width:600px; }
     </style>
 
-    <!-- PDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    <!-- Chart.js для Radar Chart -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
+
 <body>
-<header class="app-header">
-    <div class="app-header-inner">
-        <div class="brand">
-            <div class="brand-mark">TR</div>
-            <div>
-                <div class="brand-title">Talent Radar Pro</div>
-                <div class="brand-subtitle">Система оценки компетенций для госструктур и компаний</div>
-            </div>
-        </div>
-        <div class="brand-meta">
-            <div>Индивидуальный профиль компетенций</div>
-            <div>На базе методологии Elshan Musayev · AI & Public Sector</div>
-        </div>
-    </div>
-</header>
+<div class="header">Talent Radar Pro — Оценка компетенций</div>
 
-<main class="app-main">
-    <div class="card">
-        <h1 style="font-size:20px;margin-bottom:6px;">Оценка по системе Talent Radar Pro</h1>
-        <p class="intro-text">
-            Заполните форму, оценивая каждый пункт от 1 (очень низко/совершенно не согласен) до 5 (очень высоко/полностью согласен).
-            После заполнения нажмите <strong>«Рассчитать»</strong>, чтобы получить профиль компетенций, Radar Chart и PDF-отчёт.
-        </p>
+<div class="container">
+    <h2>Информация</h2>
+    <label>Имя кандидата:
+        <input id="candidate_name" type="text" placeholder="Например: Алиев Расим">
+    </label>
+    <br><br>
+    <label>Целевая роль:
+        <input id="target_role" type="text" placeholder="AI-координатор, аналитик...">
+    </label>
 
-        <div class="header-grid">
-            <div>
-                <label>Имя кандидата:<br>
-                    <input type="text" id="candidate_name" placeholder="Например: Алиев Расим">
-                </label>
-            </div>
-            <div>
-                <label>Целевая роль / позиция:<br>
-                    <input type="text" id="target_role" placeholder="Например: AI-координатор, аналитик, тимлид">
-                </label>
-            </div>
-        </div>
-    </div>
+    <h3>Hard skills</h3>
+    <table>
+        <tr><th>Навык</th><th>Оценка</th></tr>
+        <tr><td>Цифровая грамотность</td><td><select id="hard_digital"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></td></tr>
+        <tr><td>Программирование</td><td><select id="hard_programming"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></td></tr>
+        <tr><td>Аналитика</td><td><select id="hard_analytics"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></td></tr>
+        <tr><td>Проекты</td><td><select id="hard_project"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></td></tr>
+    </table>
 
-    <div class="card">
-        <h2 style="font-size:18px;">Hard skills (профессиональные навыки)</h2>
-        <table>
-            <thead><tr><th>Навык</th><th>Оценка</th></tr></thead>
-            <tbody>
-            <tr><td>Цифровая грамотность (офисные программы, интернет)</td><td><select id="hard_digital"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></td></tr>
-            <tr><td>Программирование / разработка</td><td><select id="hard_programming"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></td></tr>
-            <tr><td>Аналитика и работа с данными</td><td><select id="hard_analytics"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></td></tr>
-            <tr><td>Управление проектами</td><td><select id="hard_project"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></td></tr>
-            <tr><td>Маркетинг и продажи</td><td><select id="hard_marketing"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></td></tr>
-            <tr><td>Финансы и бюджетирование</td><td><select id="hard_finance"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></td></tr>
-            <tr><td>Другие профильные навыки</td><td><select id="hard_other"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></td></tr>
-            </tbody>
-        </table>
-    </div>
+    <h3>Soft skills</h3>
+    <table>
+        <tr><th>Навык</th><th>Оценка</th></tr>
+        <tr><td>Коммуникация</td><td><select id="soft_communication"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></td></tr>
+        <tr><td>Эмпатия</td><td><select id="soft_listening"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></td></tr>
+        <tr><td>Лидерство</td><td><select id="soft_leadership"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></td></tr>
+    </table>
 
-    <div class="card">
-        <h2 style="font-size:18px;">Soft skills (гибкие навыки)</h2>
-        <table>
-            <thead><tr><th>Навык</th><th>Оценка</th></tr></thead>
-            <tbody>
-            <tr><td>Вербальная и письменная коммуникация</td><td><select id="soft_communication"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></td></tr>
-            <tr><td>Активное слушание и эмпатия</td><td><select id="soft_listening"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></td></tr>
-            <tr><td>Командная работа и сотрудничество</td><td><select id="soft_teamwork"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></td></tr>
-            <tr><td>Лидерство и способность вдохновлять</td><td><select id="soft_leadership"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></td></tr>
-            <tr><td>Эмоциональный интеллект</td><td><select id="soft_emotional"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></td></tr>
-            <tr><td>Адаптивность и гибкость</td><td><select id="soft_adaptability"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></td></tr>
-            <tr><td>Проблемное мышление и креативность</td><td><select id="soft_problem"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></td></tr>
-            <tr><td>Тайм-менеджмент и приоритезация</td><td><select id="soft_time"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></td></tr>
-            <tr><td>Разрешение конфликтов и переговоры</td><td><select id="soft_conflict"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></td></tr>
-            <tr><td>Презентационные навыки и публичные выступления</td><td><select id="soft_presentation"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></td></tr>
-            </tbody>
-        </table>
-    </div>
+    <h3>Уверенность</h3>
+    <table>
+        <tr><td>Представление идей</td><td><select id="conf_1"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></td></tr>
+        <tr><td>Спокойствие под давлением</td><td><select id="conf_3"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></td></tr>
+    </table>
 
-    <div class="card">
-        <h2 style="font-size:18px;">Уверенность в себе и самоэффективность</h2>
-        <table>
-            <thead><tr><th>Утверждение</th><th>Оценка</th></tr></thead>
-            <tbody>
-            <tr><td>Я чувствую уверенность, представляя свои идеи группе.</td><td><select id="conf_1"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></td></tr>
-            <tr><td>Я могу выразить своё мнение, даже если его оспаривают.</td><td><select id="conf_2"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></td></tr>
-            <tr><td>Я сохраняю спокойствие под давлением.</td><td><select id="conf_3"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></td></tr>
-            <tr><td>Я верю в свою способность достигать поставленных целей.</td><td><select id="conf_4"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></td></tr>
-            <tr><td>Я быстро восстанавливаюсь после неудач.</td><td><select id="conf_5"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></td></tr>
-            </tbody>
-        </table>
-    </div>
+    <button onclick="calculateResults()">Рассчитать</button>
+    <button onclick="downloadPDF()" id="pdf_btn" disabled>Скачать PDF</button>
 
-    <div class="card">
-        <h2 style="font-size:18px;">Черты личности (Big Five)</h2>
-        <table>
-            <thead><tr><th>Утверждение</th><th>Оценка</th></tr></thead>
-            <tbody>
-            <tr><td>Мне нравится быть в центре внимания и общаться с людьми.</td><td><select id="big_extraversion_1"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></td></tr>
-            <tr><td>Я чувствую прилив энергии после социальных взаимодействий.</td><td><select id="big_extraversion_2"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></td></tr>
-            <tr><td>Я доверяю людям и готов идти на компромисс.</td><td><select id="big_agreeableness_1"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></td></tr>
-            <tr><td>Я избегаю конфликтов и ценю гармонию.</td><td><select id="big_agreeableness_2"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></td></tr>
-            <tr><td>Я тщательно планирую дела и довожу их до конца.</td><td><select id="big_conscientiousness_1"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></td></tr>
-            <tr><td>Я соблюдаю сроки и стараюсь избегать ошибок.</td><td><select id="big_conscientiousness_2"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></td></tr>
-            <tr><td>Я часто испытываю стресс и беспокойство.</td><td><select id="big_neuroticism_1"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></td></tr>
-            <tr><td>Небольшие трудности выводят меня из равновесия.</td><td><select id="big_neuroticism_2"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></td></tr>
-            <tr><td>Я открыт новому и люблю экспериментировать.</td><td><select id="big_openness_1"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></td></tr>
-            <tr><td>Искусство, музыка и литература меня вдохновляют.</td><td><select id="big_openness_2"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></td></tr>
-            </tbody>
-        </table>
-
-        <div class="note">
-            После расчёта результатов вы увидите официальное резюме профиля, Radar Chart и сможете выгрузить PDF-отчёт для руководства или кадровой службы.
-        </div>
-
-        <div class="buttons-row">
-            <button type="button" onclick="calculateResults()">Рассчитать</button>
-            <button type="button" id="download_pdf" onclick="downloadPDF()" disabled>Скачать PDF-отчёт</button>
-        </div>
-    </div>
-
-    <!-- Отчёт: именно этот блок идёт в PDF (вторая страница) -->
-    <div id="report_container" style="display:none;">
-        <div class="report-header">
-            <div>
-                <div class="report-header-title">Отчёт по системе Talent Radar Pro</div>
-                <div style="font-size:11px;color:var(--text-muted);">
-                    Индивидуальный профиль компетенций для целей подбора, развития и кадрового резерва.
-                </div>
-            </div>
-            <div class="report-header-meta">
-                <div>Дата формирования: <span id="report_date"></span></div>
-                <div>Разработано: Talent Radar · Elshan Musayev</div>
-            </div>
-        </div>
-
-        <div class="methodology-box">
-            Основано на комбинированной оценке: hard skills, soft skills, уверенность в себе и модель Big Five.
-            Итоговый индекс (0–100) и уровень A/B/C/D могут использоваться для кадровых решений и формирования
-            AI-/digital-кадрового пула.
-        </div>
-
-        <div id="results" class="result"></div>
-
-        <h3>График профиля (Radar Chart)</h3>
-        <p style="font-size:11px; color:#6b7280;">
-            На диаграмме показаны ключевые группы компетенций, нормированные к шкале 0–100. Чем больше площадь,
-            тем сильнее профиль для сложных задач и ответственных ролей.
-        </p>
+    <div id="report_container">
+        <h2 id="report_title"></h2>
+        <div id="results"></div>
         <canvas id="radarChart"></canvas>
     </div>
-
-    <!-- Временный контейнер для формирования PDF (обложка + отчёт) -->
-    <div id="pdf_wrapper" style="display:none;"></div>
-</main>
-
-<footer class="app-footer">
-    © Talent Radar · Developed by Elshan Musayev
-</footer>
-
+</div>
 <script>
-    var radarChart = null;
+let radarChart = null;
 
-    function average(arr) {
-        var sum = 0;
-        for (var i=0; i<arr.length; i++) { sum += arr[i]; }
-        return arr.length ? (sum / arr.length) : 0;
-    }
-    function interpretSkill(avg) {
-        if (avg >= 4.5) return 'Сильная сторона';
-        if (avg >= 3) return 'Средний уровень';
-        return 'Нуждается в развитии';
-    }
-    function interpretConfidence(avg) {
-        if (avg >= 4) return 'Высокий уровень уверенности.';
-        if (avg >= 3) return 'Умеренный уровень уверенности — есть потенциал для роста.';
-        return 'Низкая уверенность — рекомендуется работать над самооценкой.';
-    }
-    function interpretTrait(trait, avg) {
-        if (trait === 'extraversion') {
-            if (avg >= 4) return 'Вы ярко выраженный экстраверт.';
-            if (avg <= 2) return 'Вы ближе к интроверсии.';
-            return 'Амбиверт.';
-        }
-        if (trait === 'agreeableness') {
-            if (avg >= 4) return 'Высокое дружелюбие.';
-            if (avg <= 2) return 'Более независимый характер.';
-            return 'Средний уровень дружелюбия.';
-        }
-        if (trait === 'conscientiousness') {
-            if (avg >= 4) return 'Высокая сознательность.';
-            if (avg <= 2) return 'Низкая сознательность.';
-            return 'Средний уровень сознательности.';
-        }
-        if (trait === 'neuroticism') {
-            if (avg >= 4) return 'Высокая эмоциональная реактивность.';
-            if (avg <= 2) return 'Эмоциональная стабильность.';
-            return 'Средняя эмоциональная реактивность.';
-        }
-        if (trait === 'openness') {
-            if (avg >= 4) return 'Высокая открытость опыту.';
-            if (avg <= 2) return 'Склонность к традициям.';
-            return 'Средняя открытость опыту.';
-        }
-        return '';
-    }
-    function normalizeTo100(avg) {
-        return ((avg - 1) / 4) * 100;
-    }
-    function classifyOverall(score, conscAvg, neuroAvg) {
-        if (score >= 80 && conscAvg >= 3.5 && neuroAvg <= 3) {
-            return 'Сильный кандидат для сложных и ответственных ролей (в том числе AI-/digital-проектов).';
-        }
-        if (score >= 60) {
-            return 'Перспективный кандидат. Есть хороший потенциал, но перед назначением на ключевые роли стоит доработать слабые зоны.';
-        }
-        return 'Рискованный кандидат для ответственных AI-/digital-ролей. Рекомендуется сначала сфокусироваться на развитии базовых навыков и стабильности.';
-    }
-    function suggestRole(extr, agree, consc, softComm, softLead, softListen, hardAnal, hardProg) {
-        var suggestions = [];
-        if (extr >= 3.5 && softComm >= 3.5 && softLead >= 3.5) {
-            suggestions.push('Лидер / евангелист изменений (работа с людьми, презентации, внутренний “амбассадор” AI-инициатив).');
-        }
-        if (hardAnal >= 3.5 && consc >= 3.5) {
-            suggestions.push('Аналитик / эксперт “за кулисами” (данные, отчёты, подготовка решений).');
-        }
-        if (agree >= 3.5 && softListen >= 3.5) {
-            suggestions.push('Клиентский / сервисный профиль (работа с обращениями, поддержка, фасилитация).');
-        }
-        if (suggestions.length === 0) {
-            suggestions.push('Профиль пока не тянет на явные лидерские или экспертные роли — лучше рассматривать вспомогательные / операционные задачи с постепенным развитием.');
-        }
-        return suggestions;
-    }
+function avg(arr) {
+    return arr.reduce((a,b)=>a+b,0) / arr.length;
+}
 
-    function calculateResults() {
-        var name = document.getElementById('candidate_name').value || 'Кандидат';
-        var targetRole = document.getElementById('target_role').value || 'не указана';
+function normalize(val) {
+    return ((val - 1) / 4) * 100;
+}
 
-        // hard
-        var hardIds = ['hard_digital','hard_programming','hard_analytics','hard_project','hard_marketing','hard_finance','hard_other'];
-        var hardVals = hardIds.map(function(id){ return parseInt(document.getElementById(id).value); });
-        var hardAvg = average(hardVals);
+function calculateResults() {
 
-        // soft
-        var softIds = ['soft_communication','soft_listening','soft_teamwork','soft_leadership','soft_emotional','soft_adaptability','soft_problem','soft_time','soft_conflict','soft_presentation'];
-        var softVals = softIds.map(function(id){ return parseInt(document.getElementById(id).value); });
-        var softAvg = average(softVals);
+    let name = document.getElementById("candidate_name").value || "Кандидат";
+    let target = document.getElementById("target_role").value || "Не указана";
 
-        // confidence
-        var confIds = ['conf_1','conf_2','conf_3','conf_4','conf_5'];
-        var confVals = confIds.map(function(id){ return parseInt(document.getElementById(id).value); });
-        var confAvg = average(confVals);
+    // Hard skills
+    let hard = avg([
+        +hard_digital.value,
+        +hard_programming.value,
+        +hard_analytics.value,
+        +hard_project.value
+    ]);
 
-        // traits
-        var extr = average([parseInt(document.getElementById('big_extraversion_1').value), parseInt(document.getElementById('big_extraversion_2').value)]);
-        var agree = average([parseInt(document.getElementById('big_agreeableness_1').value), parseInt(document.getElementById('big_agreeableness_2').value)]);
-        var consc = average([parseInt(document.getElementById('big_conscientiousness_1').value), parseInt(document.getElementById('big_conscientiousness_2').value)]);
-        var neuro = average([parseInt(document.getElementById('big_neuroticism_1').value), parseInt(document.getElementById('big_neuroticism_2').value)]);
-        var open  = average([parseInt(document.getElementById('big_openness_1').value), parseInt(document.getElementById('big_openness_2').value)]);
+    // Soft skills
+    let soft = avg([
+        +soft_communication.value,
+        +soft_listening.value,
+        +soft_leadership.value
+    ]);
 
-        var hardNorm = normalizeTo100(hardAvg);
-        var softNorm = normalizeTo100(softAvg);
-        var confNorm = normalizeTo100(confAvg);
-        var traitNorm = average([
-            normalizeTo100(extr),
-            normalizeTo100(agree),
-            normalizeTo100(consc),
-            normalizeTo100(6 - neuro),
-            normalizeTo100(open)
-        ]);
+    // Confidence
+    let conf = avg([
+        +conf_1.value,
+        +conf_3.value
+    ]);
 
-        var overallScore = hardNorm * 0.3 + softNorm * 0.3 + confNorm * 0.2 + traitNorm * 0.2;
+    let hardN = normalize(hard);
+    let softN = normalize(soft);
+    let confN = normalize(conf);
 
-        var areas = [
-            { name: 'Профессиональные навыки (hard skills)', avg: hardAvg },
-            { name: 'Гибкие навыки (soft skills)', avg: softAvg },
-            { name: 'Уверенность в себе / самоэффективность', avg: confAvg }
-        ];
-        areas.sort(function(a, b){ return a.avg - b.avg; });
-        var devText = '1) ' + areas[0].name + ' — самая слабая зона, имеет смысл сфокусироваться на развитии здесь в первую очередь.';
-        if (areas[1]) {
-            devText += '<br>2) ' + areas[1].name + ' — вторая по приоритету зона развития.';
-        }
+    let score = hardN * 0.4 + softN * 0.4 + confN * 0.2;
 
-        var softComm = parseInt(document.getElementById('soft_communication').value);
-        var softLead = parseInt(document.getElementById('soft_leadership').value);
-        var softListen = parseInt(document.getElementById('soft_listening').value);
-        var hardAnal = parseInt(document.getElementById('hard_analytics').value);
-        var hardProg = parseInt(document.getElementById('hard_programming').value);
-        var roleSuggestions = suggestRole(extr, agree, consc, softComm, softLead, softListen, hardAnal, hardProg);
+    // Формирование текста отчёта
+    let html = `
+        <h3>Профиль кандидата: ${name}</h3>
+        <p><b>Целевая роль:</b> ${target}</p>
 
-        var out = '';
-        out += '<h2 style="margin-top:0;">Результаты оценки для: ' + name + '</h2>';
-        out += '<p><strong>Целевая роль:</strong> ' + targetRole + '</p>';
+        <h4>Итоговый индекс:</h4>
+        <p><b>${score.toFixed(0)} / 100</b></p>
 
-        out += '<h3>Итоговый индекс Talent Radar</h3>';
-        out += '<p><strong>Общий индекс:</strong> ' + overallScore.toFixed(0) + ' из 100.</p>';
-        out += '<p>' + classifyOverall(overallScore, consc, neuro) + '</p>';
+        <h4>Hard skills:</h4>
+        <p>${hard.toFixed(2)}</p>
 
-        out += '<h3>Профессиональные навыки (hard skills)</h3><p>Средний балл: ' + hardAvg.toFixed(2) + ' — ' + interpretSkill(hardAvg) + '.</p>';
-        out += '<h3>Гибкие навыки (soft skills)</h3><p>Средний балл: ' + softAvg.toFixed(2) + ' — ' + interpretSkill(softAvg) + '.</p>';
-        out += '<h3>Уверенность в себе</h3><p>Средний балл: ' + confAvg.toFixed(2) + '. ' + interpretConfidence(confAvg) + '</p>';
+        <h4>Soft skills:</h4>
+        <p>${soft.toFixed(2)}</p>
 
-        out += '<h3>Черты личности (Big Five)</h3>';
-        out += '<p><strong>Экстраверсия:</strong> ' + extr.toFixed(2) + '. ' + interpretTrait('extraversion', extr) + '</p>';
-        out += '<p><strong>Дружелюбие:</strong> ' + agree.toFixed(2) + '. ' + interpretTrait('agreeableness', agree) + '</p>';
-        out += '<p><strong>Сознательность:</strong> ' + consc.toFixed(2) + '. ' + interpretTrait('conscientiousness', consc) + '</p>';
-        out += '<p><strong>Эмоциональная стабильность:</strong> ' + (6 - neuro).toFixed(2) + '. ' + interpretTrait('neuroticism', neuro) + '</p>';
-        out += '<p><strong>Открытость опыту:</strong> ' + open.toFixed(2) + '. ' + interpretTrait('openness', open) + '</p>';
+        <h4>Уверенность:</h4>
+        <p>${conf.toFixed(2)}</p>
+    `;
 
-        out += '<h3>Ролевой профиль (предварительная рекомендация)</h3>';
-        out += '<ul>';
-        roleSuggestions.forEach(function(s){ out += '<li>' + s + '</li>'; });
-        out += '</ul>';
+    document.getElementById("results").innerHTML = html;
 
-        out += '<h3>Приоритетные зоны развития</h3>';
-        out += '<p>' + devText + '</p>';
+    document.getElementById("report_title").innerHTML =
+        "Отчёт Talent Radar Pro";
 
-        var resultDiv = document.getElementById('results');
-        resultDiv.innerHTML = out;
+    document.getElementById("report_container").style.display = "block";
+    document.getElementById("pdf_btn").disabled = false;
 
-        var dateEl = document.getElementById('report_date');
-        if (dateEl) {
-            var d = new Date();
-            dateEl.textContent = d.toLocaleDateString('ru-RU');
-        }
+    // Radar chart
+    let ctx = document.getElementById("radarChart").getContext("2d");
 
-        var report = document.getElementById('report_container');
-        if (report) { report.style.display = 'block'; }
+    if (radarChart) radarChart.destroy();
 
-        var pdfBtn = document.getElementById('download_pdf');
-        if (pdfBtn) { pdfBtn.disabled = false; }
-
-        var ctx = document.getElementById('radarChart').getContext('2d');
-
-        var radarData = [
-            hardNorm,
-            softNorm,
-            confNorm,
-            normalizeTo100(extr),
-            normalizeTo100(agree),
-            normalizeTo100(consc),
-            normalizeTo100(6 - neuro),
-            normalizeTo100(open)
-        ];
-
-        var labels = [
-            'Hard skills',
-            'Soft skills',
-            'Уверенность',
-            'Экстраверсия',
-            'Дружелюбие',
-            'Сознательность',
-            'Эмоц. стабильность',
-            'Открытость опыту'
-        ];
-
-        if (radarChart) {
-            radarChart.destroy();
-        }
-
-        radarChart = new Chart(ctx, {
-            type: 'radar',
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: 'Профиль компетенций',
-                    data: radarData,
-                    fill: true,
-                    pointRadius: 3
-                }]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    r: {
-                        beginAtZero: true,
-                        min: 0,
-                        max: 100,
-                        ticks: {
-                            stepSize: 20
-                        }
-                    }
-                },
-                plugins: {
-                    legend: { display: false },
-                    title: { display: false }
+    radarChart = new Chart(ctx, {
+        type: "radar",
+        data: {
+            labels: ["Hard", "Soft", "Уверенность"],
+            datasets: [{
+                label: "Профиль компетенций",
+                data: [hardN, softN, confN],
+                fill: true,
+                pointRadius: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                r: {
+                    min: 0,
+                    max: 100
                 }
-            }
-        });
+            },
+            plugins: { legend: { display: false } }
+        }
+    });
+}
+
+function downloadPDF() {
+    const report = document.getElementById("report_container");
+
+    if (report.style.display === "none") {
+        alert("Сначала рассчитайте отчёт.");
+        return;
     }
 
-    function downloadPDF() {
-        var name = document.getElementById('candidate_name').value || 'Кандидат';
-        var targetRole = document.getElementById('target_role').value || 'не указана';
-        var report = document.getElementById('report_container');
+    let opt = {
+        margin: 10,
+        filename: "Talent_Radar_Report.pdf",
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
+    };
 
-        if (!report || report.style.display === 'none' || !report.innerHTML.trim()) {
-            alert('Сначала нажмите «Рассчитать», чтобы сформировать отчёт.');
-            return;
-        }
-
-        var pdfWrapper = document.getElementById('pdf_wrapper');
-        if (!pdfWrapper) {
-            alert('Техническая ошибка: не найден контейнер pdf_wrapper.');
-            return;
-        }
-
-        var originalParent = report.parentNode;
-        var originalNextSibling = report.nextSibling;
-
-        var d = new Date();
-        var dateStr = d.toLocaleDateString('ru-RU');
-
-        var coverHtml = ''
-            + '<div class="pdf-cover">'
-            +   '<div class="pdf-cover-title">Talent Radar Pro</div>'
-            +   '<div class="pdf-cover-subtitle">Individual Competency Profile</div>'
-            +   '<div class="pdf-cover-meta">'
-            +       '<div><strong>Кандидат:</strong> ' + name + '</div>'
-            +       '<div><strong>Целевая роль:</strong> ' + targetRole + '</div>'
-            +       '<div><strong>Дата формирования:</strong> ' + dateStr + '</div>'
-            +       '<div><strong>Организация:</strong> EKM Global Consulting GmbH / EM Consulting</div>'
-            +       '<div style="margin-top:10px;font-size:12px;">Developed by Elshan Musayev · AI & Public Sector</div>'
-            +   '</div>'
-            + '</div>'
-            + '<div class="page-break"></div>';
-
-        pdfWrapper.innerHTML = coverHtml;
-        pdfWrapper.appendChild(report);
-        pdfWrapper.style.display = 'block';
-
-        var opt = {
-            margin:       10,
-            filename:     'Talent_Radar_' + name.replace(/\s+/g, '_') + '.pdf',
-            image:        { type: 'jpeg', quality: 0.98 },
-            html2canvas:  { scale: 2 },
-            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
-        };
-
-        html2pdf().set(opt).from(pdfWrapper).save().then(function () {
-            pdfWrapper.style.display = 'none';
-            if (originalNextSibling) {
-                originalParent.insertBefore(report, originalNextSibling);
-            } else {
-                originalParent.appendChild(report);
-            }
-        }).catch(function () {
-            pdfWrapper.style.display = 'none';
-            if (originalNextSibling) {
-                originalParent.insertBefore(report, originalNextSibling);
-            } else {
-                originalParent.appendChild(report);
-            }
-            alert('Произошла ошибка при формировании PDF. Попробуйте ещё раз.');
-        });
-    }
+    html2pdf().set(opt).from(report).save();
+}
 </script>
 </body>
 </html>
