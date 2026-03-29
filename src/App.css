@@ -461,6 +461,34 @@ body {
   border-color: var(--border-hover);
 }
 
+/* Nail preview */
+.nail-preview {
+  display: flex;
+  gap: 6px;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 16px 0 8px;
+  margin-bottom: 4px;
+}
+
+.nail-shape {
+  width: 22px;
+  height: 36px;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+  transition: transform 0.2s;
+}
+
+.nail-shape:nth-child(1) { height: 30px; }
+.nail-shape:nth-child(2) { height: 36px; }
+.nail-shape:nth-child(3) { height: 40px; }
+.nail-shape:nth-child(4) { height: 38px; }
+.nail-shape:nth-child(5) { height: 28px; }
+
+.nail-preview:hover .nail-shape {
+  transform: translateY(-3px);
+}
+
 .complexity-badge {
   display: inline-block;
   font-size: 10px;

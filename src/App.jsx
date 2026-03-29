@@ -32,6 +32,72 @@ Return ONLY a JSON object with this exact structure (no markdown, no explanation
   "stylePersonality": "one evocative sentence about the client's aesthetic"
 }`
 
+// Nail shape border-radius map
+const shapeBorderRadius = {
+  Almond:   '50% 50% 45% 45% / 60% 60% 40% 40%',
+  Oval:     '50% 50% 40% 40% / 55% 55% 45% 45%',
+  Square:   '4px 4px 4px 4px',
+  Coffin:   '40% 40% 4px 4px',
+  Stiletto: '50% 50% 20% 20% / 70% 70% 30% 30%',
+  Round:    '50% 50% 40% 40% / 50% 50% 50% 50%',
+  Squoval:  '30% 30% 8px 8px',
+}
+
+// Design patterns per index (0=Simple, 1=Medium, 2=Complex)
+function NailPreview({ index, colors, shape, complexity }) {
+  const br = shapeBorderRadius[shape] || '50% 50% 40% 40% / 55% 55% 45% 45%'
+  const nails = [0, 1, 2, 3, 4]
+
+  function getNailStyle(nailIdx) {
+    const base = colors[nailIdx % colors.length] || '#c9a87c'
+    const accent = colors[(nailIdx + 2) % colors.length] || '#f0e8e0'
+
+    if (index === 0) {
+      // Simple — solid color, accent on ring finger
+      return {
+        background: nailIdx === 3 ? accent : base,
+      }
+    }
+    if (index === 1) {
+      // Medium — french tip effect (lighter tip)
+      return {
+        background: `linear-gradient(to top, ${base} 65%, ${lighten(base)} 65%)`,
+      }
+    }
+    // Complex — gradient + subtle pattern
+    return {
+      background: `linear-gradient(135deg, ${base} 0%, ${accent} 50%, ${base} 100%)`,
+    }
+  }
+
+  return (
+    <div className="nail-preview">
+      {nails.map(i => (
+        <div
+          key={i}
+          className="nail-shape"
+          style={{
+            borderRadius: br,
+            ...getNailStyle(i),
+          }}
+        />
+      ))}
+    </div>
+  )
+}
+
+function lighten(hex) {
+  try {
+    const n = parseInt(hex.replace('#', ''), 16)
+    const r = Math.min(255, ((n >> 16) & 0xff) + 60)
+    const g = Math.min(255, ((n >> 8) & 0xff) + 60)
+    const b = Math.min(255, (n & 0xff) + 60)
+    return `rgb(${r},${g},${b})`
+  } catch {
+    return '#f0e8e0'
+  }
+}
+
 const shapeIcons = {
   Almond: '🌿',
   Oval: '🥚',
@@ -293,8 +359,15 @@ function ResultsScreen({ analysis, imagePreview, onReset }) {
         <div className="designs-row">
           {analysis.designSuggestions.map((d, i) => {
             const s = complexityStyle[d.complexity] || complexityStyle.Simple
+            const paletteColors = analysis.colorPalette.map(c => c.hex)
             return (
               <div key={i} className="design-card">
+                <NailPreview
+                  index={i}
+                  colors={paletteColors}
+                  shape={analysis.recommendedShape}
+                  complexity={d.complexity}
+                />
                 <span
                   className="complexity-badge"
                   style={{ color: s.color, background: s.bg, borderColor: s.border }}
