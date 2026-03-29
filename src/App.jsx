@@ -384,10 +384,18 @@ function ResultsScreen({ analysis, imagePreview, onReset }) {
 
       {/* CTA */}
       <section className="cta">
-        <h2 className="cta-title">Воплотить в жизнь?</h2>
-        <p className="cta-sub">Ваш AI-анализ отправится мастеру до записи.</p>
+        <div className="cta-studio-badge">✦ Kamala Studio Wien</div>
+        <h2 className="cta-title">Хотите такой маникюр?</h2>
+        <p className="cta-sub">Обращайтесь в <strong>Kamala Studio Wien</strong> — воплотим ваш AI-анализ в жизнь.</p>
         <div className="cta-btns">
-          <button className="cta-fill">Найти мастера рядом</button>
+          <a
+            className="cta-fill"
+            href="https://www.instagram.com/kamala.studio.wien"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Записаться в студию
+          </a>
           <button className="cta-outline">Сохранить результат</button>
         </div>
       </section>
