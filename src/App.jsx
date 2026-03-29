@@ -98,6 +98,69 @@ function lighten(hex) {
   }
 }
 
+const T = {
+  ru: {
+    heroTitle1: 'Ваши руки.',
+    heroTitle2: 'Идеальный маникюр.',
+    heroSub: 'Загрузите фото рук — AI подберёт форму, палитру и дизайн, созданные именно для вас.',
+    dropText: 'Перетащите фото или нажмите для выбора',
+    dropHint: 'JPG, PNG — лучше при дневном освещении',
+    changePhoto: 'Изменить фото',
+    analyzeBtn: 'Подобрать дизайн',
+    loading: 'Анализирую…',
+    error: 'Ошибка при анализе изображения. Проверьте API-ключ или попробуйте снова.',
+    backBtn: '← Новый анализ',
+    paletteTitle: 'Цветовая палитра',
+    designsTitle: 'Дизайн-решения',
+    ctaTitle: 'Воплотить в жизнь?',
+    ctaSub: 'Ваш AI-анализ отправится мастеру до записи.',
+    ctaBtn: 'Kamala Studio Wien',
+    saveBtn: 'Сохранить результат',
+    footer: 'NAÏL AI — Красота, персонализированная технологией',
+    poweredBy: 'Powered by AI',
+  },
+  en: {
+    heroTitle1: 'Your hands.',
+    heroTitle2: 'Perfect nails.',
+    heroSub: 'Upload a photo of your hands — AI will select the shape, palette and design created just for you.',
+    dropText: 'Drag a photo here or click to choose',
+    dropHint: 'JPG, PNG — best in daylight',
+    changePhoto: 'Change photo',
+    analyzeBtn: 'Find my design',
+    loading: 'Analyzing…',
+    error: 'Error analyzing image. Check your API key or try again.',
+    backBtn: '← New analysis',
+    paletteTitle: 'Color palette',
+    designsTitle: 'Design suggestions',
+    ctaTitle: 'Ready to make it real?',
+    ctaSub: 'Your AI analysis will be sent to the master before booking.',
+    ctaBtn: 'Kamala Studio Wien',
+    saveBtn: 'Save result',
+    footer: 'NAÏL AI — Beauty personalized by technology',
+    poweredBy: 'Powered by AI',
+  },
+  de: {
+    heroTitle1: 'Ihre Hände.',
+    heroTitle2: 'Perfekte Nägel.',
+    heroSub: 'Laden Sie ein Foto Ihrer Hände hoch — KI wählt Form, Palette und Design speziell für Sie.',
+    dropText: 'Foto hierher ziehen oder zum Auswählen klicken',
+    dropHint: 'JPG, PNG — am besten bei Tageslicht',
+    changePhoto: 'Foto ändern',
+    analyzeBtn: 'Design finden',
+    loading: 'Analysiere…',
+    error: 'Fehler bei der Bildanalyse. Überprüfen Sie den API-Schlüssel oder versuchen Sie es erneut.',
+    backBtn: '← Neue Analyse',
+    paletteTitle: 'Farbpalette',
+    designsTitle: 'Design-Vorschläge',
+    ctaTitle: 'Bereit zum Umsetzen?',
+    ctaSub: 'Ihre KI-Analyse wird vor der Buchung an die Meisterin gesendet.',
+    ctaBtn: 'Kamala Studio Wien',
+    saveBtn: 'Ergebnis speichern',
+    footer: 'NAÏL AI — Schönheit, personalisiert durch Technologie',
+    poweredBy: 'Powered by AI',
+  },
+}
+
 const shapeIcons = {
   Almond: '🌿',
   Oval: '🥚',
@@ -134,6 +197,8 @@ export default function App() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const [isDragging, setIsDragging] = useState(false)
+  const [lang, setLang] = useState('ru')
+  const t = T[lang]
   const fileInputRef = useRef(null)
 
   const handleFile = useCallback((file) => {
@@ -209,13 +274,27 @@ export default function App() {
       <header className="header">
         <div className="header-inner">
           <div className="logo">NAÏL<span>AI</span></div>
-          <div className="powered-by">Powered by AI</div>
+          <div className="header-right">
+            <div className="lang-switcher">
+              {['ru', 'en', 'de'].map(l => (
+                <button
+                  key={l}
+                  className={`lang-btn${lang === l ? ' active' : ''}`}
+                  onClick={() => setLang(l)}
+                >
+                  {l.toUpperCase()}
+                </button>
+              ))}
+            </div>
+            <div className="powered-by">{t.poweredBy}</div>
+          </div>
         </div>
       </header>
 
       <main className="main">
         {screen === 'upload' && (
           <UploadScreen
+            t={t}
             imagePreview={imagePreview}
             loading={loading}
             error={error}
@@ -230,6 +309,7 @@ export default function App() {
         )}
         {screen === 'results' && analysis && (
           <ResultsScreen
+            t={t}
             analysis={analysis}
             imagePreview={imagePreview}
             onReset={handleReset}
@@ -238,26 +318,24 @@ export default function App() {
       </main>
 
       <footer className="footer">
-        NAÏL AI — Красота, персонализированная технологией
+        {t.footer}
       </footer>
     </div>
   )
 }
 
 function UploadScreen({
-  imagePreview, loading, error, isDragging,
+  t, imagePreview, loading, error, isDragging,
   fileInputRef, onFileChange, onDrop, onDragOver, onDragLeave, onAnalyze,
 }) {
   return (
     <div className="upload-screen">
       <div className="hero">
         <h1 className="hero-title">
-          Ваши руки.<br />
-          <em>Идеальный маникюр.</em>
+          {t.heroTitle1}<br />
+          <em>{t.heroTitle2}</em>
         </h1>
-        <p className="hero-subtitle">
-          Загрузите фото рук — AI подберёт форму, палитру и дизайн, созданные именно для вас.
-        </p>
+        <p className="hero-subtitle">{t.heroSub}</p>
       </div>
 
       <div
@@ -276,46 +354,46 @@ function UploadScreen({
         />
         {imagePreview ? (
           <div className="preview-wrap">
-            <img src={imagePreview} alt="Предпросмотр" className="preview-img" />
+            <img src={imagePreview} alt="Preview" className="preview-img" />
             <button
               className="change-btn"
               onClick={(e) => { e.stopPropagation(); fileInputRef.current?.click() }}
             >
-              Изменить фото
+              {t.changePhoto}
             </button>
           </div>
         ) : (
           <div className="drop-content">
             <div className="drop-icon">✦</div>
-            <p className="drop-text">Перетащите фото или нажмите для выбора</p>
-            <p className="drop-hint">JPG, PNG — лучше при дневном освещении</p>
+            <p className="drop-text">{t.dropText}</p>
+            <p className="drop-hint">{t.dropHint}</p>
           </div>
         )}
       </div>
 
-      {error && <p className="error-msg">{error}</p>}
+      {error && <p className="error-msg">{t.error}</p>}
 
       {imagePreview && !loading && (
         <button className="analyze-btn" onClick={onAnalyze}>
-          Подобрать дизайн
+          {t.analyzeBtn}
         </button>
       )}
 
       {loading && (
         <div className="loading-wrap">
-          <div className="loading-pulse">Анализирую…</div>
+          <div className="loading-pulse">{t.loading}</div>
         </div>
       )}
     </div>
   )
 }
 
-function ResultsScreen({ analysis, imagePreview, onReset }) {
+function ResultsScreen({ t, analysis, imagePreview, onReset }) {
   const shapeIcon = shapeIcons[analysis.recommendedShape] || '✦'
 
   return (
     <div className="results-screen">
-      <button className="back-btn" onClick={onReset}>← Новый анализ</button>
+      <button className="back-btn" onClick={onReset}>{t.backBtn}</button>
 
       <p className="style-quote">"{analysis.stylePersonality}"</p>
 
@@ -338,7 +416,7 @@ function ResultsScreen({ analysis, imagePreview, onReset }) {
 
       {/* Color Palette */}
       <section className="section">
-        <h2 className="section-title">Цветовая палитра</h2>
+        <h2 className="section-title">{t.paletteTitle}</h2>
         <div className="palette-row">
           {analysis.colorPalette.map((c, i) => (
             <div key={i} className="color-item">
@@ -355,7 +433,7 @@ function ResultsScreen({ analysis, imagePreview, onReset }) {
 
       {/* Design Suggestions */}
       <section className="section">
-        <h2 className="section-title">Дизайн-решения</h2>
+        <h2 className="section-title">{t.designsTitle}</h2>
         <div className="designs-row">
           {analysis.designSuggestions.map((d, i) => {
             const s = complexityStyle[d.complexity] || complexityStyle.Simple
@@ -384,8 +462,8 @@ function ResultsScreen({ analysis, imagePreview, onReset }) {
 
       {/* CTA */}
       <section className="cta">
-        <h2 className="cta-title">Воплотить в жизнь?</h2>
-        <p className="cta-sub">Ваш AI-анализ отправится мастеру до записи.</p>
+        <h2 className="cta-title">{t.ctaTitle}</h2>
+        <p className="cta-sub">{t.ctaSub}</p>
         <div className="cta-btns">
           <a
             className="cta-fill"
@@ -393,9 +471,9 @@ function ResultsScreen({ analysis, imagePreview, onReset }) {
             target="_blank"
             rel="noopener noreferrer"
           >
-            Kamala Studio Wien
+            {t.ctaBtn}
           </a>
-          <button className="cta-outline">Сохранить результат</button>
+          <button className="cta-outline">{t.saveBtn}</button>
         </div>
       </section>
     </div>
